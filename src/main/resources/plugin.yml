@@ -1,0 +1,133 @@
+name: AstralisEssen
+main: me.astralis.essen.AstralisEssen
+version: 1.0.0
+api-version: 1.20
+author: Never
+description: Многофункциональный плагин AstralisEssen для серверов Minecraft 1.20.1–1.21.1
+website: https://github.com/AstralisTeam
+
+commands:
+  fly:
+    description: Включает или выключает режим полёта
+    usage: /fly
+    permission: astralis.fly
+
+  essen:
+    description: Основная команда AstralisEssen
+    usage: /essen reload
+    permission: astralis.essen
+
+  god:
+    description: Включает или выключает бессмертие
+    usage: /god
+    permission: astralis.god
+
+  gm:
+    description: Меняет игровой режим (0 - Survival, 1 - Creative, 2 - Adventure, 3 - Spectator)
+    usage: /gm <0|1|2|3>
+    permission: astralis.gm
+
+  itemname:
+    description: Изменяет название предмета в руке
+    usage: /itemname <новое имя>
+    permission: astralis.itemname
+
+  itemlore:
+    description: Изменяет описание предмета в руке
+    usage: /itemlore <новое описание>
+    permission: astralis.itemlore
+
+  ban:
+    description: Банит игрока по нику на время или навсегда
+    usage: /ban <игрок> [время|permanent] [причина]
+    permission: astralis.ban
+
+  unban:
+    description: Разбанивает игрока по нику
+    usage: /unban <игрок> [причина]
+    permission: astralis.unban
+
+  banip:
+    description: Банит игрока или IP-адрес на время или навсегда
+    usage: /banip <игрок|ip> [время|permanent] [причина]
+    permission: astralis.banip
+
+  unbanip:
+    description: Разбанивает IP-адрес
+    usage: /unbanip <ip> [причина]
+    permission: astralis.unbanip
+
+  mute:
+    description: Мьют игрока на время или навсегда
+    usage: /mute <игрок> <время|permanent> [причина]
+    permission: astralis.mute
+
+  unmute:
+    description: Снимает мут с игрока
+    usage: /unmute <игрок> [причина]
+    permission: astralis.unmute
+
+permissions:
+  astralis.*:
+    description: Доступ ко всем командам AstralisEssen
+    children:
+      astralis.fly: true
+      astralis.god: true
+      astralis.gm: true
+      astralis.itemname: true
+      astralis.itemlore: true
+      astralis.ban: true
+      astralis.unban: true
+      astralis.banip: true
+      astralis.unbanip: true
+      astralis.mute: true
+      astralis.unmute: true
+      astralis.essen: true
+
+  astralis.fly:
+    description: Разрешает включать и выключать полёт
+    default: op
+
+  astralis.god:
+    description: Разрешает включать и выключать бессмертие
+    default: op
+
+  astralis.essen:
+    description: Позволяет использовать /essen reload
+    default: op
+
+  astralis.gm:
+    description: Разрешает изменять игровой режим
+    default: op
+
+  astralis.itemname:
+    description: Разрешает изменять название предмета
+    default: op
+
+  astralis.itemlore:
+    description: Разрешает изменять описание предмета
+    default: op
+
+  astralis.ban:
+    description: Разрешает банить игроков
+    default: op
+
+  astralis.unban:
+    description: Разрешает разбанивать игроков
+    default: op
+
+  astralis.banip:
+    description: Разрешает банить по IP
+    default: op
+
+  astralis.unbanip:
+    description: Разрешает разбанивать IP
+    default: op
+
+  astralis.mute:
+    description: Разрешает мьютить игроков
+    default: op
+
+  astralis.unmute:
+    description: Разрешает снимать мут с игроков
+    default: op

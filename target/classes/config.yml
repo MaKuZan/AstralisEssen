@@ -1,0 +1,43 @@
+# =====================================================
+# AstralisEssen — Конфигурационный файл
+# Автор: Astralis Team
+# Версия: 1.0.0
+# =====================================================
+
+# Плейсхолдеры
+# {player} ник игрока, которого коснулось действие
+# {moderator} ник модератора кто выдал наказание
+# {time} время бана/мута
+# {reason} причина
+
+messages:
+  join: "§bДобро пожаловать на сервер Astralis, §f%player%§b!"
+  quit: "§c%player% §7вышел с сервера."
+
+  config-reload: "&aКонфиг AstralisEssen перезагружен!"
+  ban-broadcast: "&c{player} был забанен администратором {moderator} на {time}. Причина: {reason}"
+  unban-broadcast: "&a{player} был разбанен администратором {moderator}. Причина: {reason}"
+
+  mute-broadcast: "&e{player} был замьючен администратором {moderator} на {time}. Причина: {reason}"
+  unmute-broadcast: "&a{player} был размьючен администратором {moderator}. Причина: {reason}"
+
+  banip-broadcast: "&4IP-адрес {player} был забанен администратором {moderator} на {time}. Причина: {reason}"
+  unbanip-broadcast: "&aIP-адрес {player} был разбанен администратором {moderator}. Причина: {reason}"
+
+  ban-player: "&cВы были забанены! Причина: {reason} До: {time}"
+  mute-player: "&cВы замьючены! Причина: {reason} До: {time}"
+
+logs:
+  enabled: true
+  path: "plugins/AstralisEssen/logs"
+
+chat:
+  prefix: "§8[§bAstralisEssen§8] §7"
+
+# Настройки сообщений для команд
+command-messages:
+  no-permission: "§cУ вас нет прав на использование этой команды!"
+  player-only: "§cЭта команда доступна только игрокам!"
+  invalid-args: "§cНеверные аргументы. Используйте: %usage%"
+  player-not-found: "§cИгрок не найден!"
+  success: "§aКоманда выполнена успешно!"

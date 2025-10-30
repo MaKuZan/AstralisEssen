@@ -1,0 +1,8 @@
+me\astralis\essen\commands\BanCommand.class
+me\astralis\essen\commands\BanIpCommand.class
+me\astralis\essen\commands\ItemLoreCommand.class
+me\astralis\essen\AstralisEssen.class
+me\astralis\essen\commands\GodCommand.class
+me\astralis\essen\commands\ItemNameCommand.class
+me\astralis\essen\commands\FlyCommand.class
+me\astralis\essen\commands\GamemodeCommand.class
