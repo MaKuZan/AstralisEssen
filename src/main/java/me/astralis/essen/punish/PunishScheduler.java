@@ -5,7 +5,6 @@ import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +27,7 @@ public class PunishScheduler {
             public void run() {
                 long now = System.currentTimeMillis();
 
+                // проверка банов
                 tempBans.entrySet().removeIf(entry -> {
                     if (now >= entry.getValue()) {
                         Bukkit.getBanList(BanList.Type.NAME).pardon(entry.getKey());
@@ -37,6 +37,7 @@ public class PunishScheduler {
                     return false;
                 });
 
+                // проверка мутов
                 tempMutes.entrySet().removeIf(entry -> {
                     if (now >= entry.getValue()) {
                         MuteManager.unmute(entry.getKey());
@@ -46,6 +47,6 @@ public class PunishScheduler {
                     return false;
                 });
             }
-        }.runTaskTimer(AstralisEssen.getInstance(), 20 * 30, 20 * 30); // каждые 30 сек
+        }.runTaskTimer(AstralisEssen.getInstance(), 20 * 30, 20 * 30); // каждые 30 секунд
     }
 }

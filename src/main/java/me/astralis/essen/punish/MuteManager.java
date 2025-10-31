@@ -1,41 +1,47 @@
 package me.astralis.essen.punish;
 
-import me.astralis.essen.utils.LogManager;
+import me.astralis.essen.AstralisEssen;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class MuteManager {
-    private static final Map<String, Long> mutes = new ConcurrentHashMap<>();
+public class MuteManager {
 
-    private MuteManager() {}
+    private static final Map<String, Long> mutedPlayers = new ConcurrentHashMap<>();
 
-    public static void mute(String moderator, String targetName, long durationMillis, String reason, String prettyTime) {
-        long until = (durationMillis < 0) ? -1L : (System.currentTimeMillis() + durationMillis);
-        mutes.put(targetName.toLowerCase(), until);
-
-        LogManager.log("mutes.logs",
-                moderator + " | used /mute " + targetName + " " +
-                        (until == -1 ? "permanent" : prettyTime) + " " + reason);
+    /**
+     * Замьютить игрока
+     * @param player   ник игрока
+     * @param endTime  время окончания мута (в миллисекундах, 0 = навсегда)
+     */
+    public static void mute(String player, long endTime) {
+        mutedPlayers.put(player.toLowerCase(), endTime);
+        if (endTime > 0) {
+            PunishScheduler.scheduleUnmute(player, endTime);
+        }
     }
 
-    public static boolean unmute(String moderator, String targetName, String reason) {
-        Long prev = mutes.remove(targetName.toLowerCase());
-        if (prev == null) return false;
+    /**
+     * Проверка — находится ли игрок в муте
+     */
+    public static boolean isMuted(String player) {
+        if (!mutedPlayers.containsKey(player.toLowerCase())) return false;
 
-        LogManager.log("unmutes.logs",
-                moderator + " | used /unmute " + targetName + " " +
-                        (reason == null || reason.isBlank() ? "NoReason" : reason));
-        return true;
-    }
+        long expire = mutedPlayers.get(player.toLowerCase());
+        if (expire == 0) return true; // перманентный мут
 
-    public static boolean isMuted(String name) {
-        Long end = mutes.get(name.toLowerCase());
-        if (end == null) return false;
-        if (end == -1) return true;
-        if (System.currentTimeMillis() > end) {
-            mutes.remove(name.toLowerCase());
+        if (System.currentTimeMillis() > expire) {
+            // истёк срок — снять мут
+            unmute(player);
             return false;
         }
         return true;
+    }
+
+    /**
+     * Размьют игрока (без сообщений)
+     */
+    public static void unmute(String player) {
+        mutedPlayers.remove(player.toLowerCase());
+        AstralisEssen.getInstance().getLogger().info("[UNMUTE] " + player);
     }
 }

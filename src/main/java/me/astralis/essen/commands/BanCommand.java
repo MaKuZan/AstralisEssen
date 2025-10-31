@@ -2,11 +2,14 @@ package me.astralis.essen.commands;
 
 import me.astralis.essen.utils.LogManager;
 import me.astralis.essen.utils.MessageUtil;
+import me.astralis.essen.AstralisEssen;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
+import net.kyori.adventure.text.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -15,45 +18,65 @@ public class BanCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage("§cИспользование: /ban <игрок> [время] [причина]");
+            MessageUtil.sendCommandMessage(sender, "invalid-args", "%usage%", "/ban <игрок> [время|permanent] [причина]");
             return true;
         }
 
         String targetName = args[0];
         String reason = "Нарушение правил";
         Date expireDate = null;
+        String timeToken = "permanent";
 
-        // ✅ если второй аргумент — время, а не причина
+        // определяем срок
         if (args.length >= 2 && isTime(args[1])) {
+            timeToken = args[1];
             expireDate = parseTime(args[1]);
-            if (args.length > 2) {
+            if (args.length > 2)
                 reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-            }
         } else if (args.length >= 2) {
             reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
         }
 
-        // добавить бан
+        // добавляем бан
         Bukkit.getBanList(BanList.Type.NAME).addBan(targetName, reason, expireDate, sender.getName());
 
         Player target = Bukkit.getPlayerExact(targetName);
         if (target != null) {
-            MessageUtil.send(target, "messages.ban-player",
-                    "{reason}", reason,
-                    "{time}", (expireDate != null ? args[1] : "permanent"));
-            target.kickPlayer("§cВы были забанены!\n§7Причина: §f" + reason);
+            // формируем меню кика
+            List<String> lines = AstralisEssen.getInstance().getConfig().getStringList("messages.ban-player");
+            String dateStr = (expireDate != null)
+                    ? new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(expireDate)
+                    : "Навсегда";
+
+            if (lines != null && !lines.isEmpty()) {
+                StringBuilder fullMessage = new StringBuilder();
+                for (String line : lines) {
+                    line = line.replace("{moderator}", sender.getName())
+                            .replace("{reason}", reason)
+                            .replace("{time}", timeToken)
+                            .replace("{date}", dateStr)
+                            .replace("{player}", target.getName());
+                    fullMessage.append(line).append("\n");
+                }
+
+                // теперь отправляем на экран отключения, а не в чат
+                Component kickComponent = MessageUtil.parseToComponent(fullMessage.toString().trim());
+                target.kick(kickComponent);
+            } else {
+                target.kick(MessageUtil.parseToComponent("&cВы были забанены! Причина: &f" + reason));
+            }
         }
 
-        // ✅ теперь подставляется правильное время
-        MessageUtil.broadcast("messages.ban-broadcast",
+        // глобальное сообщение
+        MessageUtil.broadcast("ban-broadcast",
                 "{player}", targetName,
                 "{moderator}", sender.getName(),
-                "{time}", (expireDate != null ? args[1] : "permanent"),
+                "{time}", timeToken,
                 "{reason}", reason);
 
+        // лог
         LogManager.log("bans.logs",
-                sender.getName() + " | used /ban " + targetName + " " +
-                        (expireDate != null ? args[1] : "permanent") + " " + reason);
+                sender.getName() + " | used /ban " + targetName + " " + timeToken + " " + reason);
 
         return true;
     }
